@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .navigation {
+    border-bottom-width: 3px;
+    border-bottom-color: black;
+    border-bottom-style: solid;
+    opacity: 0.8;
+    width: inherit;
+    height: 50px;
+    background-color: black;
+    text-align: center;
+    position: sticky;
+    padding: 15px;
+  }
+  
+  a.profile {
+    float: right;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: bold;
+  }
+  
+  a.profile:hover {
+    background-color: #ddd;
+    color: black;
+  }
+
+  /* Full-width input fields */
+  input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+
+  a.title{
+    font-weight: bold;
+    color: white;
+    font-size: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration: none;
+  }
+
+  form#chefSearch{
+    float: right;
+  }
+
+  input[type="search"].search{
+    margin-top: 10px;
+    height: 25px;
+    border-radius: 2px;
+  }
+
+  input[type="submit"].search{
+    height: 25px;
+    border-radius: 2px;
+  }
+
+  input[type="submit"]:hover{
+    color: white;
+    background-color: black;
+  }
+
+  div.error p{
+    font-size: 15px;
+    color: red;
+    margin: 5px;
+  }
+
+  div.error{
+    height: 15px;
+  }

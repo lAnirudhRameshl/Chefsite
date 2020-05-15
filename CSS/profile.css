@@ -1,0 +1,100 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  div.navigation{
+    border-bottom-width: 3px;
+    border-bottom-color: black;
+    border-bottom-style: solid;
+    opacity: 0.8;
+    width: inherit;
+    height: 50px;
+    background-color: black;
+    text-align: center;
+    position: sticky;
+    padding: 15px;
+}
+  
+  a.profile {
+    float: right;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: bold;
+  }
+  
+  a.profile:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  a.title{
+    font-weight: bold;
+    color: white;
+    font-size: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-decoration: none;
+  }
+
+  input[type="search"].ownRecipe{
+    width: 500px;
+    height: 30px;
+    border-radius: 3px;
+    margin-top: 10px;
+    border-width: 1px;
+  }
+
+  input[type="submit"].ownRecipe{
+    border-radius: 3px;
+    height: 30px;
+  }
+
+  form#chefSearch{
+    float: right;
+  }
+
+  input[type="search"].search{
+    margin-top: 10px;
+    height: 25px;
+    border-radius: 2px;
+  }
+
+  input[type="submit"].search{
+    height: 25px;
+    border-radius: 2px;
+  }
+
+  input[type="submit"]:hover{
+    color: white;
+    background-color: black;
+  }
+
+  .collapsible{
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+  }
+
+  .active, .collapsible:hover{
+    background-color: #ccc;
+  }
+  
+  .content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+  }
