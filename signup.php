@@ -1,7 +1,5 @@
 <?php
-    require_once "config.php";
-
-    //echo "<script>alert('Welcome');</script>";
+    $conn = new MongoDB\Driver\Manager();
 
     $username = $password = $confirm_password = $email = "";
     $username_err = $password_err = $confirm_password_err = $email_err = "";
@@ -9,30 +7,29 @@
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(empty(trim($_POST["email"]))){
             $email_err = "Email field empty";
+        } else{
+            $email = trim($_POST["email"]);
+            $filter = array("email" => "".$email);
+            $query = new MongoDB\Driver\Query($filter);
+            $result = $conn -> executeQuery("iwp_project.users", $query);
+            $res_array = $result -> toarray();
+            if(count($res_array) == 1){
+                $email_err = "Email already registered";
+            }
         }
 
         if(empty(trim($_POST["username"]))){
             $username_err = "Username field empty";
         } else{
-            $query = "select * from users where username = ?";
+            $filter = ["username" => "".trim($_POST["username"])];
+            $query = new MongoDB\Driver\Query($filter);
+            $result = $conn -> executeQuery("iwp_project.users", $query);
+            //echo "<script type='text/javascript'>alert('".count($result->toarray())."');</script>";
 
-            if($statement = mysqli_prepare($conn, $query)){
-                mysqli_stmt_bind_param($statement, "s", $param_username);
-                $param_username = trim($_POST["username"]);
-
-                if(mysqli_stmt_execute($statement)){
-                    mysqli_stmt_store_result($statement);
-
-                    if(mysqli_stmt_num_rows($statement) == 1){
-                        $username_err = "Username already taken";
-                    } else{
-                        $username = trim($_POST["username"]);
-                    }
-                } else{
-                    echo "<script type='text/javascript'>alert('Sorry!! Something went wrong. Try again later');</script>";
-                    
-                }
-                mysqli_stmt_close($statement);
+            if(count($result->toarray()) == 1){
+                $username_err = "Username already taken";
+            } else{
+                $username = trim($_POST["username"]);
             }
         }
 
@@ -53,37 +50,18 @@
             }
         }
 
-        if(empty($username_err) && empty($password_err) && empty($confirm_password_err)){
-            $query = "insert into users values(?, ?);";
-            
-            if($statement = mysqli_prepare($conn, $query)){
-                mysqli_stmt_bind_param($statement,"ss",$param_username, $param_password);
-                $param_username = $username;
-                $param_password = password_hash($password, PASSWORD_DEFAULT);
+        if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($email_err)){
+            $insert = array("username" => "".$username, "password" => "".password_hash($password,PASSWORD_DEFAULT), "email" => "".$email);
+            $bulk = new MongoDB\Driver\BulkWrite;
+            $bulk -> insert($insert);
+            $res = $conn -> executeBulkWrite("iwp_project.users", $bulk); 
 
-                if(mysqli_stmt_execute($statement)){
-                    header("location: Login_page.php");
-                } else{
-                    echo "<script type='text/javascript'>alert('Something went wrong. Try again later');</script>";
-                }
-
-                mysqli_stmt_close($statement);
+            if($res -> isAcknowledged()){
+                header("location: Login_page.php");
+            } else{
+                echo "<script type='text/javascript'>alert('Something went wrong. Try again later');</script>";
             }
-        } /*else{
-            if(!empty($username_err)){
-                echo "<script type='text/javascript'>alert('".$username_err."');</script>";
-            }
-            if(!empty($password_err)){
-                echo "<script type='text/javascript'>alert('".$password_err."');</script>";
-            }
-            if(!empty($confirm_password_err)){
-                echo "<script type='text/javascript'>alert('".$confirm_password_err."');</script>";
-            }
-            if(!empty($email_err)){
-                echo "<script type='text/javascript'>alert('".$email_err."');</script>";
-            }
-        }*/
-        mysqli_close($conn);
+        }
     }
 ?>
 

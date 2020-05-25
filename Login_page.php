@@ -6,7 +6,8 @@
         exit;
     }
 
-    require_once "config.php";
+    //require_once "config.php";
+    $conn = new MongoDB\Driver\Manager();
 
     $username = $password = "";
     $username_err = $password_err = "";
@@ -25,46 +26,29 @@
         }
 
         if(empty($username_err) && empty($password_err)){
-            $query = "select * from users where username = ?";
-
-            if($statement = mysqli_prepare($conn, $query)){
-                mysqli_stmt_bind_param($statement, "s", $param_username);
-
-                $param_username = $username;
-
-                if(mysqli_stmt_execute($statement)){
-                    mysqli_stmt_store_result($statement);
-
-                    if(mysqli_stmt_num_rows($statement) == 1){
-                        mysqli_stmt_bind_result($statement, $username, $hashed_password);
-
-                        if(mysqli_stmt_fetch($statement)){
-                            if(password_verify($password, $hashed_password)){
-                                session_start();
-                                $_SESSION["loggedin"] = true;
-                                $_SESSION["username"] = $username;
-                                $_SESSION["search_name"] = "";
-                                header("location: main.php");
-                            } else{
-                                $password_err = "password is wrong";
-                            }
-                        }
-                    } else{
-                        $username_err = "username is wrong";
-                    }
+            $filter = array("username" => "".$username);
+            $query = new MongoDB\Driver\Query($filter);
+            $result = $conn -> executeQuery("iwp_project.users", $query);
+            $res_array = $result -> toarray();
+            //print_r($res_array);
+            //echo "<script>alert('".password_hash($password, PASSWORD_DEFAULT)."');</script>";    
+            if(count($res_array) == 1){
+                if(password_verify($password, $res_array[0] -> password)){
+                    session_start();
+                    $_SESSION["loggedin"] = true;
+                    $_SESSION["username"] = $username;
+                    $_SESSION["search_name"] = "";
+                    $_SESSION["searched"] = "";
+                    $_SESSION["image_name"] = "";
+                    $_SESSION["video_name"] ="";
+                    header("location: main.php");
                 } else{
-                    echo "<script>alert('Something went wrong. Try again later')</script>";
+                    $password_err = "password is wrong";
                 }
-                mysqli_stmt_close($statement);
+            } else{
+                $username_err = "username is wrong";
             }
         }
-        mysqli_close($conn);
-        /*if(!empty($username_err)){
-            echo "<script>alert('".$username_err."');</script>";
-        }
-        if(!empty($password_err)){
-            echo "<script>alert('".$password_err."');</script>";
-        }*/
     }
 
 ?>
@@ -117,6 +101,8 @@
                             <div class="login">
                                 <input type="password" name="password" id="password" placeholder="Password">
                             </div>
+                            <a href="forgot_password.php" class="signup" style="float:right">Forgot Password?</a>
+                            <br>
                             <div class="login">
                                 <input type="submit" name="submit" id="submit" value="Login">
                             </div>

@@ -3,7 +3,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
-  .navigation {
+  div.navigation {
     border-bottom-width: 3px;
     border-bottom-color: black;
     border-bottom-style: solid;
@@ -31,9 +31,8 @@ body {
     color: black;
   }
 
-  /* Full-width input fields */
-  input[type=text], input[type=password] {
-    width: 100%;
+  input[type=text]{
+    width: 80%;
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
@@ -49,26 +48,6 @@ body {
     text-decoration: none;
   }
 
-  form#chefSearch{
-    float: right;
-  }
-
-  input[type="search"].search{
-    margin-top: 10px;
-    height: 25px;
-    border-radius: 2px;
-  }
-
-  input[type="submit"].search{
-    height: 25px;
-    border-radius: 2px;
-  }
-
-  input[type="submit"]:hover{
-    color: white;
-    background-color: black;
-  }
-
   div.error p{
     font-size: 15px;
     color: red;
@@ -77,4 +56,49 @@ body {
 
   div.error{
     height: 15px;
+  }
+
+  textarea{
+    white-space: pre-wrap;
+  }
+
+  div.dropdown{
+    float: right;
+    overflow: hidden;
+  }
+
+  .dropdown {
+    font-size: 17px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    margin: 0px; 
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .dropdown:hover .dropdown_a{
+    background-color: #ddd;
+    color: black;
+  }
+
+  .dropdown_content{
+    display: none;
+    position: absolute;
+    background-color: black;
+    min-width: 160px;
+    right: 5px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+  .dropdown_content a:hover{
+    background-color: #ddd;
+    color: black;
+  }
+
+  .dropdown:hover .dropdown_content{
+    display: block;
   }

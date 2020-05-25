@@ -1,29 +1,17 @@
 <?php
     session_start();
 
-    require_once "config.php";
+    $conn = new MongoDB\Driver\Manager();
     $result = "";
 
-    $query = "select * from recipe where username = ?";
-
-    if($statement = mysqli_prepare($conn, $query)){
-        mysqli_stmt_bind_param($statement, "s", $param_username);
-        if(empty($_SESSION["search_name"])){
-            $param_username = $_SESSION["username"];
-        } else{
-            $param_username = $_SESSION["search_name"];
-        }
-
-         if(mysqli_stmt_execute($statement)){
-            //mysqli_stmt_store_result($statement);
-
-            $result = mysqli_stmt_get_result($statement);
-        } else{
-             echo "<script type='text/javascript'>alert('Sorry!! Something went wrong. Try again later');</script>";
-        }
-        mysqli_stmt_close($statement);
-        mysqli_close($conn);
+    if(empty($_SESSION["search_name"])){
+        $filter = array("username" => "".$_SESSION["username"]);
+    } else{
+        $filter = array("username" => "".$_SESSION["search_name"]);
     }
+    $query = new MongoDb\Driver\Query($filter);
+    $result = $conn -> executeQuery("iwp_project.recipe", $query);
+    $res_array = $result -> toarray();
 ?>
 
 <!DOCTYPE html>
@@ -36,21 +24,34 @@
   </head>
   <body>
     <div class="navigation">
-      <a class="title" href="main.php">Chefsite</a>
-        <a class="profile" href="logout.php">Logout</a>
-        <a href="main.php" class="profile">New recipe</a>
-        <a href="reset_pass.php" class="profile">Reset Password</a>
-        <a href="search.php" class="profile">Search</a>
+        <a class="title" href="profile.php">Chefsite</a>
+        <div class="dropdown">
+            <a class="dropdown_a"><?php echo $_SESSION["username"] ?></a>
+            <div class="dropdown_content">
+                <a class="profile" href="logout.php">Logout</a><br>
+                <a href="main.php" class="profile">New recipe</a><br>
+                <a href="reset_pass.php" class="profile">Reset Password</a><br>
+                <a href="search.php" class="profile">Search</a><br>
+                <a href="edit_recipe.php" class="profile">Edit Recipe</a><br>
+                <a href="delete_recipe.php" class="profile">Delete Recipe</a><br>
+            </div>    
+        </div>
   </div>
     <div style="margin-left: 5vw;">
     <h2>Name: <?php echo $_SESSION["username"]; ?></h2>
     <br />
     <h3>Recipes</h3>
     <?php
-        while($row = mysqli_fetch_assoc($result)){
-            echo '<button type="button" class="collapsible">'.$row["name_of_recipe"].'</button>';
+        foreach($res_array as $recipe){
+            echo '<button type="button" class="collapsible">'.$recipe -> name_of_recipe.'</button>';
             echo "<div class='content'>";
-            echo "<p>".$row['preparation']."</p>";
+            echo "<img align='right' height=300px width=300px style='margin:10px;' src = '".$recipe -> image."' />"; 
+            echo "<p style='white-space:pre-line;'>".$recipe -> recipe."</p>";
+            echo "<video controls><source src='".$recipe -> video . "'type='video/mp4' >";
+            echo "<video controls><source src='".$recipe -> video . "'type='video/ogg' >"; 
+            echo "<video controls><source src='".$recipe -> video . "'type='video/webm' >";
+            echo "Browser does not support video";
+            echo "</video>";            
             echo "</div>";
         }
 
@@ -69,7 +70,7 @@
                     content.style.display = "block";
                 }
             }); 
-        }
+        } 
     </script>
   </div>
   </body>

@@ -125,3 +125,44 @@ div.error p{
 div.error{
     height: 15px;
 }
+
+div.dropdown{
+    float: right;
+    overflow: hidden;
+  }
+
+  .dropdown {
+    font-size: 17px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    margin: 0px; 
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .dropdown:hover .dropdown_a{
+    background-color: #ddd;
+    color: black;
+  }
+
+  .dropdown_content{
+    display: none;
+    position: absolute;
+    background-color: black;
+    width: 160px;
+    right: 0;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+  .dropdown_content a:hover{
+    background-color: #ddd;
+    color: black;
+  }
+
+  .dropdown:hover .dropdown_content{
+    display: block;
+  }

@@ -6,47 +6,44 @@
         exit;
     } 
 
-    require_once "config.php";
+    $conn = new MongoDB\Driver\MAnager();
 
     $new_password = $confirm_password = "";
     $new_password_err = $confirm_password_err = "";
 
     if($_SERVER["REQUEST_METHOD"] = "POST"){
-        if(empty(trim($_POST["password"]))){
-            $new_password_err = "Please enter the password";
-        } else{
-            $new_password = trim($_POST["password"]);
-        }
-
-        if(empty(trim($_POST["confirm"]))){
-            $confirm_password_err = "Please enter your password again to confirm";
-        } else{
-            $confirm_password = trim($_POST["confirm"]);
-            if(empty($new_password_err) && ($new_password != $confirm_password)){
-                $confirm_password_err = "Password do not match";
+        if(isset($_POST["submit"])){
+            if(empty(trim($_POST["password"]))){
+                $new_password_err = "Please enter the password";
+            } else{
+                $new_password = trim($_POST["password"]);
             }
-        } 
 
-        if(empty($new_password_err) && empty($confirm_password_err)){
-            $query = "update users set password = ? where username = ?";
+            if(empty(trim($_POST["confirm"]))){
+                $confirm_password_err = "Please enter your password again to confirm";
+            } else{
+                $confirm_password = trim($_POST["confirm"]);
+                if(empty($new_password_err) && ($new_password != $confirm_password)){
+                    $confirm_password_err = "Password do not match";
+                }
+            } 
 
-            if($statement = mysqli_prepare($conn, $query)){
-                mysqli_stmt_bind_param($statement, "ss", $param_password, $param_username);
+            if(empty($new_password_err) && empty($confirm_password_err)){
+                $filter = array("username" => "".$_SESSION["username"]);
+                $new_obj = array('$set' => array("password" => password_hash($new_password, PASSWORD_DEFAULT)));
+                $bulk = new MongoDB\Driver\BulkWrite;
+                $bulk -> update($filter, $new_obj);
+                $result = $conn -> executeBulkWrite("iwp_project.users", $bulk);
 
-                $param_password = password_hash($new_password, PASSWORD_DEFAULT);
-                $param_username = $_SESSION["username"];
-
-                if(mysqli_stmt_execute($statement)){
+                if($result -> isAcknowledged()){
                     session_destroy();
                     header("location: Login_page.php");
                     exit();
                 } else{
                     echo "Something went wrong. Try again later";
                 }
-                mysqli_stmt_close($statement);
             }
         }
-        mysqli_close($conn);
     }
 ?>
 
@@ -62,11 +59,17 @@
         <div class="background" style="overflow:hidden">
             <nav>
                 <div class="navigation">
-                    <a class="title" href="profile.php">Chefsite</a>
-                    <a class="profile" href="logout.php">Logout</a>
-                    <a href="profile.php" class="profile">Profile</a>
-                    <a href="reset_pass.php" class="profile">Reset Password</a>
-                    <a href="search.php" class="profile">Search</a>
+                    <div class="dropdown">
+                        <a class="dropdown_a"><?php echo $_SESSION["username"] ?></a>
+                        <div class="dropdown_content">
+                            <a class="profile" href="logout.php">Logout</a><br>
+                            <a href="profile.php" class="profile">Profile</a><br>
+                            <a href="edit_recipe.php" class="profile">Edit recipe</a><br>
+                            <a href="search.php" class="profile">Search</a><br>
+                            <a href="main.php" class="profile">New Recipe</a><br>
+                            <a href="delete_recipe.php" class="profile">Delete Recipe</a><br>
+                        </div>  
+                    </div>
                 </div>
             </nav>
             <header>
